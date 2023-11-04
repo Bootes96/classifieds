@@ -8,6 +8,7 @@ use app\database\ClassifiedsGateway;
 use app\database\Db;
 use app\ErrorHandler;
 
+set_error_handler("app\ErrorHandler::handleError");
 set_exception_handler("app\ErrorHandler::handleException");
 
 header("Content-type:application/json; charset=UTF-8");
