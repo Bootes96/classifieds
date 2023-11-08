@@ -12,13 +12,31 @@ class ClassifiedsController {
         
     }
 
-    public function processRequest(string $method, ?string $id) {
-        if($id) {
-            var_dump($id);
+    
+
+    public function processRequest(string $method, ?string $id, ?array $fields): void 
+    {
+
+        if ($id) {
+            $this->processResourceRequest($method, $id, $fields);
         } else {
             $this->processCollectionRequest($method);
         }
     }
+
+    private function processResourceRequest(string $method, string $id, ?array $fields) {
+        $ad = $this->gateway->getOne($id, $fields);
+
+        echo json_encode($ad);
+
+        if(!$ad) {
+            http_response_code(404);
+            echo json_encode(["message" => "Объявление не найдено"]);
+            return;
+        }
+    }
+
+
 
     private function processCollectionRequest(string $method): void 
     {

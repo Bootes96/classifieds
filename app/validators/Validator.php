@@ -12,7 +12,7 @@ class Validator {
 
         $validatedFields['title'] = array_key_exists('title', $data) ? $this->validateTitle($data['title']) : $this->errors['title'] = 'Пожалуйста, заполните поле';
         $validatedFields['description'] = array_key_exists('description', $data) ? $this->validateDesc($data['description']) : $this->errors['description'] = 'Пожалуйста, заполните поле';
-        $validatedFields['main_img'] = array_key_exists('main_img', $data) ? $this->validateImg($data['main_img']) : $this->errors['main_img'] = 'Пожалуйста, заполните поле';
+        $validatedFields['images'] = array_key_exists('images', $data) ? $this->validateImg($data['images']) : $this->errors['images'] = 'Пожалуйста, заполните поле';
         $validatedFields['price'] = array_key_exists('price', $data) ? $this->validatePrice($data['price']) : $this->errors['price'] = 'Пожалуйста, заполните поле';
 
         foreach ($validatedFields as $key => $val) {
@@ -55,12 +55,12 @@ class Validator {
         return !empty($errors) ? $errors : true;
     }
 
-    public function validateImg(string $img) {
+    public function validateImg(array $images) {
         $errors = [];
-        $imgLength = mb_strlen($img);
-
-        if(!$imgLength) {
-            $errors[] =  "Пожалуйста, заполните поле";
+        if(!$images) {
+           $errors[] =  "Пожалуйста, заполните поле";
+        } elseif(count($images) > 3) {
+           $errors[] =  "Можно добавить не больше трех фотографий";
         }
 
         return !empty($errors) ? $errors : true;
