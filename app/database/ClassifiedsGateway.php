@@ -13,18 +13,42 @@ class ClassifiedsGateway
         $this->conn = $database->getConnection();
     }
 
-    public function getAllClassifieds(): array
+    public function getAllClassifieds(?string $page, ?string $per_page): array
     {
-        $sql = 'SELECT * from classifieds';
+        if(!$page && !$per_page) {
+            $page = 1;
+            $per_page = 5;
+        }
+        
+        $begin = ($page * $per_page) - $per_page;
+        
+        $metadata = $this->getMeta($page, $per_page);
+
+        $sql = "SELECT * from classifieds LIMIT {$begin}, {$per_page}";
         $stmt = $this->conn->query($sql);
 
-        $data = [];
+        $data['metadata'] = $metadata;
 
         while($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
+            $data['ads'] = $row;
         }
 
         return $data;
+    }
+
+    public function getMeta(string $page, string $per_page): array
+    {
+        $metadata['page'] = $page;
+        $metadata['per_page'] = $per_page;
+        
+        $totalSql = "SELECT count(*) FROM classifieds";
+        $res = $this->conn->query($totalSql);
+        $total = $res->fetchColumn();
+
+        $metadata['page_count'] = ceil($total / $per_page);
+        $metadata['total'] = $total;
+
+        return $metadata;
     }
 
     public function create(array $data): string

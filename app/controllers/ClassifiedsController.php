@@ -42,7 +42,9 @@ class ClassifiedsController {
     {
         switch($method) {
             case "GET":
-                echo json_encode($this->gateway->getAllClassifieds(), JSON_UNESCAPED_UNICODE);
+                $page = $_GET['page'] ?? null;
+                $per_page = $_GET['per_page'] ?? null;
+                echo json_encode($this->gateway->getAllClassifieds($page, $per_page), JSON_UNESCAPED_UNICODE);
                 break;
                 
             case "POST": 
